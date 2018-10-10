@@ -21,7 +21,7 @@ class fangSpider(Spider):
             'fjSpider.pipelines.fang-pipelines.GFsundeESPipeline': 300,
         },
         # 渲染服务的url
-        'SPLASH_URL': ' ',
+        'SPLASH_URL': 'http://localhost:8050',
 
         # 下载器中间件
         'DOWNLOADER_MIDDLEWARES': {
@@ -42,34 +42,40 @@ class fangSpider(Spider):
 
     def start_requests(self):
 
-        for i in range(1, 101):
+        for i in range(1, 2):
             if self.flag:
                 break
             # js解析用splash
+            
             yield SplashRequest(url=self.url % i, callback=self.parse, args={'wait': 0.5, 'html': 1})
-
     def parse(self, response):
         soup = BeautifulSoup(response.body, 'lxml', from_encoding='utf-8')
+        url_lists = soup.find_all('span' , class_= 'tit_shop')
+        print(url_lists)
+        
+#print(response.url)        
+#print(soup)
         # 房源发布时间
-        updatedays = soup.find_all('span', class_='ml10 gray9')
+        #updatedays = soup.find_all('span', class_='ml10 gray9')
         # 房源信息页面url
-        urls = soup.find('div', class_='houseList').find_all(
-            'a', attrs={'title': ''})
+        #urls = soup.find('div', class_='houseList').find_all(
+         #   'a', attrs={'title': ''})
         # print(response.url)
         # print(len(urls))
-        for url, updateday in zip(urls, updatedays):
+        #for url, updateday in zip(urls, updatedays):
             # 增量控制
             # 去除今天发布的房源
-            if search('[小时分钟]+', updateday.get_text().strip()) != None:
-                continue
+         #   if search('[小时分钟]+', updateday.get_text().strip()) != None:
+          #      continue
             # 保留昨天发布的，去除其他的房源
-            elif updateday.get_text().strip()[:3] == '1天前':
+           # elif updateday.get_text().strip()[:3] == '1天前':
                 # print(updateday.get_text().strip())
-                url = urljoin(response.url, url['href'])
-                yield Request(url, callback=self.second_parse)
-            else:
-                self.flag = True
-                break
+            #    url = urljoin(response.url, url['href'])
+             #   yield Request(url, callback=self.second_parse)
+            #else:
+             #   self.flag = True
+              #  break
+    
 
     def second_parse(self, response):
         # print('\n\n\n')
