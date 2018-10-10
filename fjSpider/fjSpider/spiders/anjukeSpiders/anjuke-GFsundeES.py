@@ -53,7 +53,7 @@ class anjukeSpider(Spider):
         item['house_code'] = code_string.split('：')[1].split('，')[0].strip()
         item['listed_time'] = code_string.split('：')[-1].strip()
         dds = soup.find(
-            'div', class_='houseInfo-detail clearfix').find_all('dd')
+            'ul', class_='houseInfo-detail-list clearfix').find_all('li')
         item['neighborhood'] = dds[0].get_text().strip()
         item['location'] = dds[1].get_text().strip().replace(
             '\n', '').replace(' ', '').replace('\ue003', '').replace('－', '')
@@ -77,3 +77,4 @@ class anjukeSpider(Spider):
         item['phone_number'] = soup.find(
             'div', class_='broker-company').get_text().strip()
         yield item
+

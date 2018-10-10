@@ -30,7 +30,9 @@ class anjukeSpider(Spider):
 
     def parse(self,response):
         soup = BeautifulSoup(response.body,'lxml',from_encoding='utf-8')
-        divs = soup.find_all('div',class_='li-itemmod')
+        # print(soup)
+        divs = soup.find_all('div',class_='list-content')
+
        # prices = divs.find('div', class_='li-side')
        # for price in prices:
             #print(price.get_text())
@@ -39,11 +41,13 @@ class anjukeSpider(Spider):
             #self.price_average.append(price_list[0].get_text().strip())
             #self.price_rate.append(price_list[1].get_text().strip())
             #print(price_list[1].get_text())
-           # print(div['link'])
+            url = div.find('div' ,class_='li-itemmod')['link']
+            # print("!!!!!!!!!!!!!!" ,url)
             price_average = price_list[0].get_text().strip()
             price_rate = price_list[1].get_text().strip()
 
-            link=urljoin(response.url,div['link'])
+            link=urljoin(response.url,url)
+            yield Request(link, meta={'price_average': price_average, 'price_rate': price_rate }, callback=self.second_parse )
 
       #self.price_average = self.price_average.reverse()
        # self.price_rate = self.price_rate.reverse()
@@ -83,3 +87,4 @@ class anjukeSpider(Spider):
 
 
 ###差一个平均价格
+
