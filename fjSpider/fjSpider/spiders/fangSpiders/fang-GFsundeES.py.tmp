@@ -6,9 +6,8 @@ from bs4 import BeautifulSoup
 from scrapy import FormRequest, Request
 from scrapy.spiders import Spider
 from scrapy_splash import SplashRequest
-from pyquery import PyQuery as pq
+
 from fjSpider.items.fang_items import *
-from lxml.html import etree
 
 # 顺德小区房价信息
 
@@ -22,7 +21,7 @@ class fangSpider(Spider):
             'fjSpider.pipelines.fang-pipelines.GFsundeESPipeline': 300,
         },
         # 渲染服务的url
-        'SPLASH_URL': 'http://localhost:8050',
+        'SPLASH_URL': 'http:/localhost:8085',
 
         # 下载器中间件
         'DOWNLOADER_MIDDLEWARES': {
@@ -46,31 +45,15 @@ class fangSpider(Spider):
         for i in range(1, 2):
             if self.flag:
                 break
-            #ii js解析用splash
+            # js解析用splash
             yield SplashRequest(url=self.url % i, callback=self.parse, args={'wait': 0.5, 'html': 1})
-
-    #def parse(self, response):
-     #   print("!!!!!!!!!!!!!!!!!", response.url)
-      #  doc  = pq(response.body.decode('utf8'))
-       # for i in doc('a').filter('.clearfix').items():
-        #    print(i)      
-#for i in doc('a').filter('.shop_list shop_list_4').items():
-         #   print(i)      
-# for i in doc('a').filter('.clearfix').items():
-        #    print(i)
-        #print(doc)
-        #content = obj('')
-        #print(response.body)
-        #print(obj)
-       # print(soup)        
-    
 
     def parse(self, response):
         soup = BeautifulSoup(response.body, 'lxml', from_encoding='utf-8')
         # 房源发布时间
         updatedays = soup.find_all('span', class_='ml10 gray9')
         # 房源信息页面url
-        urls = soup.find('div', class_='shop_list shop_list_4').find_all(
+        urls = soup.find('div', class_='houseList').find_all(
             'a', attrs={'title': ''})
         # print(response.url)
         # print(len(urls))
@@ -88,7 +71,7 @@ class fangSpider(Spider):
                 self.flag = True
                 break
 
-    def second_parse1(self, response):
+    def second_parse(self, response):
         # print('\n\n\n')
         soup = BeautifulSoup(response.body, 'lxml')
 
@@ -140,6 +123,5 @@ class fangSpider(Spider):
             'div', class_='trlcont-line')[-1].find_all('span')[-1].get_text().strip()
         item['phone_number'] = soup.find(
             'span', class_='pnum').get_text().strip()
-        print(item)
         yield item
 
