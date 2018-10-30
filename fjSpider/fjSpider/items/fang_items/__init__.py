@@ -48,7 +48,16 @@ class GFsundeXQ_fangItem(scrapy.Item):
     volumetric_rate = scrapy.Field()  # 容积率
     total_floor = scrapy.Field()
     house_age = scrapy.Field()
-
+    right_descript = scrapy.Field()
+    building_old = scrapy.Field()
+    developer = scrapy.Field()
+    company = scrapy.Field()
+    green_rate = scrapy.Field()
+    property_fee = scrapy.Field()
+    additional_info = scrapy.Field()
+    mid_price = scrapy.Field() 
+    compare_month = scrapy.Field()
+    compare_year = scrapy.Field()   
 
 class GDSZES_fangItem(scrapy.Item):
     url = scrapy.Field()
