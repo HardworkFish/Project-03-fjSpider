@@ -116,4 +116,5 @@ class GFsundeXQSpider(Spider):
         item['compare_month'] = box[1].get_text().strip().split('\n')[1]
         item['compare_year'] = box[2].get_text().strip().split('\n')[1]
         print(item)
+        yield item
 

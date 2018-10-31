@@ -89,4 +89,4 @@ class GSZESSpider(Spider):
         item['belong'] = soup.find(
             'span', class_='zf_jjname').get_text().strip()
         print(item)
-       # yield item
+        yield item
