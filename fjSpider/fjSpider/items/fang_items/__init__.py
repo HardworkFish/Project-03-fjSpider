@@ -55,7 +55,7 @@ class GFsundeXQ_fangItem(scrapy.Item):
     green_rate = scrapy.Field()
     property_fee = scrapy.Field()
     additional_info = scrapy.Field()
-    mid_price = scrapy.Field() 
+    mid_month = scrapy.Field() 
     compare_month = scrapy.Field()
     compare_year = scrapy.Field()   
 

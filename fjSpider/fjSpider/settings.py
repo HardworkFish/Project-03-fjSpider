@@ -13,7 +13,7 @@ BOT_NAME = 'fjSpider'
 
 SPIDER_MODULES = ['fjSpider.spiders', 'fjSpider.spiders.fangSpiders',
                   'fjSpider.spiders.anjukeSpiders', 'fjSpider.spiders.sofangSpiders',
-                  'fjSpider.spiders.fangjiaSpiders', 'fjSpider.spiders.housingSpiders']
+                   ]
 NEWSPIDER_MODULE = 'fjSpider.spiders'
 
 MY_USER_AGENT = [
