@@ -54,22 +54,18 @@ class fangSpider(Spider):
         doc = pq(response.body.decode('utf8'))
         docs = pq(doc('.shop_list'))
         for i in docs('.floatl').items():
-           link = 'http://fs.esf.fang.com'+ i('a').attr('href')
-           print(link)
-           yield SplashRequest(link, callback=self.second_parse)
+            link = 'http://fs.esf.fang.com'+ i('a').attr('href')
+          # print(link)
+        #link = 'http://fs.esf.fang.com/chushou/3_333943076.htm'
+            yield SplashRequest(link, callback=self.second_parse)
     
-    #def second_parse(self, response):
-     #   print(response.url)     
     def second_parse(self, response):
-        # print('\n\n\n')
-        soup = BeautifulSoup(response.body, 'lxml')
-
+        print(response.url) 
         item = GFsundeES_fangItem()
         item['url'] = response.url
-        item['title'] = soup.find(
-            'div', class_='title').get_text().strip().replace('\xa0', ' ')
-        item['price_total'] = float(
-            soup.find('div', class_='trl-item sty1').find('i').get_text())
+        soup  = BeautifulSoup(response.body, 'lxml')
+        item['title']  = soup.find('h1', class_='title floatl').get_text() 
+        item['price_total'] =  soup.find('div', class_='trl-item_top').get_text().strip()
         tts = soup.find_all('div', class_='tt')
         item['house_type'] = tts[0].get_text().strip()
         item['house_area'] = tts[1].get_text().strip()
@@ -79,39 +75,23 @@ class fangSpider(Spider):
             'div')[1].get_text().split('（')[-1].split('）')[0].strip()
         item['house_floor'] = tts[4].get_text().strip()
         item['decoration'] = tts[5].get_text().strip()
-        blues = soup.find_all('a', class_='blue')
-        if len(blues) == 2:
-            item['neighborhood'] = response.xpath(
-                '/html/body/div[5]/div[1]/div[3]/div[5]/div[1]/div[2]/text()')[0].extract().strip()
-        else:
-            item['neighborhood'] = blues[0].get_text().strip()
-        item['location'] = blues[1].get_text().strip() + \
-            blues[2].get_text().strip()
-        infos = soup.find(
-            'div', class_='cont clearfix qu_bianqu1').get_text().strip().replace('\n', ' ').split(' ')
-        if infos[0] != '建筑年代':
-            return
-        for i, info in enumerate(infos):
-            if info == '建筑年代':
-                item['house_age'] = infos[i + 1]
-            elif info == '产权性质':
-                item['property_right'] = infos[i + 1]
-            elif info == '住宅类别':
-                item['residential_category'] = infos[i + 1]
-            elif info == '建筑结构':
-                item['structure'] = infos[i + 1]
-            elif info == '建筑类别':
-                item['construction_category'] = infos[i + 1]
-            elif info == '挂牌时间':
-                item['listed_time'] = infos[i + 1].split('(')[0]
-        item['description'] = soup.find(
-            'div', class_='mscont').get_text().strip()
+      #  print(item)        
+        infos = soup.find_all(
+            'span', class_='rcont')
+       # print(infos[0].get_text().strip())
+        #print(infos)
+        item['house_age'] = infos[0].get_text().strip()
+        item['property_right'] = infos[1].get_text().strip()
+        item['residential_category'] = infos[2].get_text().strip()
+        item['structure'] = infos[3].get_text().strip()
+        item['construction_category'] = infos[4].get_text().strip()
+        item['listed_time'] = infos[5].get_text().strip()
+        #print(item) 
+        item['description'] = soup.find('li', class_='font14 hxmd').get_text().strip()
         item['contact'] = soup.find(
-            'span', id='agentname').get_text().strip()
-        item['belong'] = soup.find_all(
-            'div', class_='trlcont-line')[-1].find_all('span')[-1].get_text().strip()
-        item['phone_number'] = soup.find(
-            'span', class_='pnum').get_text().strip()
+            'span', id='mobilecode').get_text().strip()
+        item['belong'] = soup.find(
+            'span', class_='zf_jjname').get_text().strip()
         print(item)
-        yield item
+       # yield item
 
