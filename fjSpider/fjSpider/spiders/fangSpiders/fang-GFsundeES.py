@@ -49,46 +49,18 @@ class fangSpider(Spider):
             #ii js解析用splash
             yield SplashRequest(url=self.url % i, callback=self.parse, args={'wait': 0.5, 'html': 1})
 
-    #def parse(self, response):
-     #   print("!!!!!!!!!!!!!!!!!", response.url)
-      #  doc  = pq(response.body.decode('utf8'))
-       # for i in doc('a').filter('.clearfix').items():
-        #    print(i)      
-#for i in doc('a').filter('.shop_list shop_list_4').items():
-         #   print(i)      
-# for i in doc('a').filter('.clearfix').items():
-        #    print(i)
-        #print(doc)
-        #content = obj('')
-        #print(response.body)
-        #print(obj)
-       # print(soup)        
-    
 
     def parse(self, response):
-        soup = BeautifulSoup(response.body, 'lxml', from_encoding='utf-8')
-        # 房源发布时间
-        updatedays = soup.find_all('span', class_='ml10 gray9')
-        # 房源信息页面url
-        urls = soup.find('div', class_='shop_list shop_list_4').find_all(
-            'a', attrs={'title': ''})
-        # print(response.url)
-        # print(len(urls))
-        for url, updateday in zip(urls, updatedays):
-            # 增量控制
-            # 去除今天发布的房源
-            if search('[小时分钟]+', updateday.get_text().strip()) != None:
-                continue
-            # 保留昨天发布的，去除其他的房源
-            elif updateday.get_text().strip()[:3] == '1天前':
-                # print(updateday.get_text().strip())
-                url = urljoin(response.url, url['href'])
-                yield Request(url, callback=self.second_parse)
-            else:
-                self.flag = True
-                break
-
-    def second_parse1(self, response):
+        doc = pq(response.body.decode('utf8'))
+        docs = pq(doc('.shop_list'))
+        for i in docs('.floatl').items():
+           link = 'http://fs.esf.fang.com'+ i('a').attr('href')
+           print(link)
+           yield SplashRequest(link, callback=self.second_parse)
+    
+    #def second_parse(self, response):
+     #   print(response.url)     
+    def second_parse(self, response):
         # print('\n\n\n')
         soup = BeautifulSoup(response.body, 'lxml')
 

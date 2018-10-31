@@ -22,7 +22,7 @@ class GSZESSpider(Spider):
             'fjSpider.pipelines.fang-pipelines.GDSZESPipeline': 300,
         },
         # 渲染服务的url
-        'SPLASH_URL': 'http://192.168.99.100:8050',
+        'SPLASH_URL': 'http://localhost:8050',
 
         # 下载器中间件
         'DOWNLOADER_MIDDLEWARES': {
